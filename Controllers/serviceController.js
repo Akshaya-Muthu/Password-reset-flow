@@ -1,68 +1,51 @@
 import Service from "../Models/serviceModel.js";
 
-//create a new service
-
 export const createService = async (req, res) => {
   try {
     const { name, description, price } = req.body;
     const service = new Service({ name, description, price });
     await service.save();
-    res
-      .status(200)
-      .json({ message: "Service created successfully", data: service });
+    res.status(201).json({ message: "Service created successfully", data: service });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
-// get all service
 
 export const getService = async (req, res) => {
   try {
     const services = await Service.find();
-    res
-      .status(200)
-      .json({ message: "Services retrieved successfully", data: services });
+    res.status(200).json({ message: "Services retrieved successfully", data: services });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
-//update service
 
 export const updateService = async (req, res) => {
   try {
-    const serviceId = req.params.id;
+    const { id } = req.params;
     const { name, description, price } = req.body;
-    const result = await Service.findByIdAndUpdate(
-      { _id: serviceId },
+    const updated = await Service.findByIdAndUpdate(
+      id,
       { name, description, price },
       { new: true }
     );
-    if (result.matchedCount == 0) {
-      return res.status(404).json({ message: "Service Not Found" });
+    if (!updated) {
+      return res.status(404).json({ message: "Service not found" });
     }
-    res
-      .status(200)
-      .json({ message: "Services Updated successfully", data: result });
+    res.status(200).json({ message: "Service updated successfully", data: updated });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//delete service
-
 export const deleteService = async (req, res) => {
   try {
-    const serviceId = req.params.id;
-    const result = await Service.findByIdAndDelete({ _id: serviceId });
-    if (!result) {
-      return res.status(404).json({ message: "Service Not Found" });
+    const { id } = req.params;
+    const deleted = await Service.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Service not found" });
     }
-    const service = await Service.find();
-    res
-      .status(200)
-      .json({ message: "Services deleted successfully", data: service });
+    res.status(200).json({ message: "Service deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
