@@ -58,7 +58,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// FORGOT PASSWORD
+// FORGOT PASSWORD (🔗 Updated with your Netlify frontend URL)
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -67,9 +67,9 @@ export const forgotPassword = async (req, res) => {
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15m",
-    }); // ✅ Use frontend URL from .env
+    });
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${user._id}/${token}`;
+    const resetLink = `https://stellular-madeleine-1de9f7.netlify.app/reset-password/${user._id}/${token}`;
 
     await sendEmail(
       user.email,
